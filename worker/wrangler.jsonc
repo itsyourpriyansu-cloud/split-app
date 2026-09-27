@@ -1,21 +1,24 @@
 {
-  "$schema": "../node_modules/wrangler/config-schema.json",
-  "name": "roomie-ledger-api",
-  "main": "src/index.ts",
-  "compatibility_date": "2026-09-27",
-  "compatibility_flags": ["nodejs_compat"],
-  "vars": {
-    "ALLOWED_ORIGINS": "http://localhost:5173,https://split-app.vercel.app"
-  },
-  "d1_databases": [
-    {
-      "binding": "ROOMIE_DB",
-      "database_name": "roomie-ledger-db",
-      "migrations_dir": "migrations"
-    }
-  ],
-  "observability": {
-    "enabled": true,
-    "head_sampling_rate": 1
-  }
+	"$schema": "../node_modules/wrangler/config-schema.json",
+	"name": "roomie-ledger-api",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-09-27",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"vars": {
+		"ALLOWED_ORIGINS": "http://localhost:5173,https://split-app-beige.vercel.app"
+	},
+	"d1_databases": [
+		{
+			"binding": "ROOMIE_DB",
+			"database_name": "roomie-ledger-db",
+			"migrations_dir": "migrations",
+			"database_id": "ac543d27-e2d0-400c-8df6-b212e27b8140"
+		}
+	],
+	"observability": {
+		"enabled": true,
+		"head_sampling_rate": 1
+	}
 }
