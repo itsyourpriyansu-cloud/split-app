@@ -5,7 +5,7 @@
   "compatibility_date": "2026-09-27",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
-    "ALLOWED_ORIGINS": "http://localhost:5173,https://roomie-ledger.vercel.app"
+    "ALLOWED_ORIGINS": "http://localhost:5173,https://split-app.vercel.app"
   },
   "d1_databases": [
     {

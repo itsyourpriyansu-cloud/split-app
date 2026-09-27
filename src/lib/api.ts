@@ -1,6 +1,7 @@
 import type { Bootstrap, Member } from "../types";
 
-const API_URL = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") || "http://localhost:8788";
+const configuredApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "");
+const API_URL = configuredApiUrl || (import.meta.env.DEV ? "http://localhost:8788" : "");
 const TOKEN_KEY = "roomie-ledger:token";
 const CACHE_KEY = "roomie-ledger:last-view";
 const OUTBOX_KEY = "roomie-ledger:outbox";
@@ -27,15 +28,23 @@ export function signOut(): void {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  if (!API_URL) {
+    throw new ApiError("The app server is not connected. Configure VITE_API_URL in Vercel and redeploy.", 503);
+  }
   const token = getToken();
-  const response = await fetch(`${API_URL}${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...init?.headers,
-    },
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}${path}`, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...init?.headers,
+      },
+    });
+  } catch {
+    throw new ApiError("The app server could not be reached. Check the Worker URL and its Vercel CORS setting.", 503);
+  }
   if (!response.ok) {
     const payload = (await response.json().catch(() => ({}))) as { error?: string };
     throw new ApiError(payload.error || "Request failed", response.status);

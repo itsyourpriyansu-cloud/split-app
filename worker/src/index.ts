@@ -1,4 +1,5 @@
 import { calculateBalances, simplifySettlements } from "./settlement";
+import { isAllowedOrigin } from "./cors";
 
 type MemberRow = { id: string; household_id: string; name: string; color: string; created_at: string };
 type ExpenseRow = {
@@ -89,11 +90,7 @@ function monthBounds(month: string): { start: string; end: string } | null {
 
 function allowedOrigin(request: Request, env: Env): string | null {
   const origin = request.headers.get("Origin");
-  if (!origin) return null;
-  const configured = env.ALLOWED_ORIGINS.split(",").map((item) => item.trim());
-  if (configured.includes(origin)) return origin;
-  if (/^https:\/\/roomie-ledger(?:-[a-z0-9-]+)?\.vercel\.app$/.test(origin)) return origin;
-  return null;
+  return isAllowedOrigin(origin, env.ALLOWED_ORIGINS) ? origin : null;
 }
 
 function corsHeaders(request: Request, env: Env): HeadersInit {
